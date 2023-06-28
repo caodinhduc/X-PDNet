@@ -1,5 +1,7 @@
-# PlaneRecNet
-This is an official implementation for PlaneRecNet: A multi-task convolutional neural network provides instance segmentation for piece-wise planes and monocular depth estimation, and focus on the cross-task consistency between two branches.
+# X-PDNet
+This is an implementation for X-PDNet: a multi-task learning framework for joint plane instance segmentation and depth estimation, which allows the respective task decoder to adaptively distill the cross-supplementary information for
+the specific task optimization. Besides, we propose Depth Guided Boundary preserving Loss to precise boundary region
+segmentation
 ![Network Architecture](/data/network_architecture.png)
 ## Changing Logs
 22th. Oct. 2021: Initial update, some trained models and data annotation will be uploaded very soon.
