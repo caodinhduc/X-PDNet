@@ -6,11 +6,13 @@ segmentation
 ![Network Architecture](/images/X-PDNet.png)
 ### 2. We design a cross-task distillation module, which levarage the idea of PAD-Net with improvement allowing model adaptive with different scales of plane instance mask
 ![attention](/images/attention.png)
-### 3. We highlight problem of obtaining boundary from current groundtruth to design boundary preserving loss, 
+### 3. We highlight problem of obtaining boundary from current groundtruth to design boundary preserving loss
 ![coarse](/images/coarse.png)
 ### 4. Then propose Depth Guide Boundary Preserving Loss, that alleviates the problem of imperfect instance ground truth
 Since my paper is under review, I cannot share more about this
-
+### 5. Manually annotated dataset for evaluation
+We contribute 3000 images with over 30000 instance masks labeled by human for reliable of plane instance segmentation task
+![result1](/images/label.png)
 # Result
 ### 1. Comparison with existing methods
 ![result1](/images/result1.png)
