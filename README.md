@@ -19,7 +19,7 @@ Visualization of effectiveness of Cross Attention Design on images from ScanNet 
 ![Network Architecture](/images/result2.png)
 
 ### 3. Evaluation of Depth Guided Boundary Preserving Loss
-![Network Architecture](/images/result3.png)
+![Network Architecture](/images/result3.png =x250)
 ### 4. Compare the effectiveness of proposed DGBPL to vanilla method
 ![Network Architecture](/images/result4.png)
 
