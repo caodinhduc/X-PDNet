@@ -1,13 +1,14 @@
 # X-PDNet: Accurate Joint Plane Instance Segmentation and Monocular Depth Estimation with Cross-Task Attention and Boundary Correction
 This is an implementation for X-PDNet: a multi-task learning framework for joint plane instance segmentation and depth estimation, which allows the respective task decoder to adaptively distill the cross-supplementary information for
 the specific task optimization. Besides, we propose Depth Guided Boundary preserving Loss to precise boundary region
-segmentation
+segmentation.
+This repo is implemented by Pytorch based on [PlaneRecNet](https://github.com/EryiXie/PlaneRecNet), proposed loss and human-annotated data will be released if we get acceptance of any upcoming conference.
 ### 1. General architecture
 ![Network Architecture](/images/X-PDNet.png)
-### 2. We design a cross-task distillation module, which levarage the idea of PAD-Net with improvement allowing model adaptive with different scales of plane instance mask
+### 2. We design a cross-task attention module, which leverage the idea of PAD-Net with improvement allowing model adaptive with different scales of plane instance mask
 
 ![attention](/images/attention.png)
-### 3. We highlight problem of obtaining boundary from current groundtruth to design boundary preserving loss
+### 3. We focus on problem of incorrect segmentation at boundary regions, analyze the limatation of obtaining boundary from current groundtruth to design traditional boundary preserving loss
 
 ![coarse](/images/coarse.png)
 ### 4. Then propose Depth Guide Boundary Preserving Loss, that alleviates the problem of imperfect instance ground truth
