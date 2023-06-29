@@ -283,32 +283,6 @@ class PlaneRecNet(nn.Module):
                                   size=ori_size,
                                   mode='bilinear', align_corners=False).squeeze(0)
         
-        
-        # import os
-        # import cv2
-        # import numpy as np
-        # for i in range(seg_masks.shape[0]):
-        #     current_tensor = seg_masks[i, :, :].detach().cpu().numpy()
-        #     current_tensor = ((current_tensor - current_tensor.min()) / (current_tensor.max() - current_tensor.min()) * 255).astype(np.uint8)
-        #     # current_tensor = cv2.Canny(current_tensor,50,100, 1)
-        #     tensor_color = cv2.applyColorMap(current_tensor, cv2.COLORMAP_VIRIDIS)
-        #     tensor_color_path = os.path.join('image_logs/mask', '{}.png'.format(i))
-        #     cv2.imwrite(tensor_color_path, tensor_color)
-        
-        # w = 1
-        # laplacian_kernel = torch.zeros((2*w+1, 2*w+1), dtype=torch.float32).reshape(1,1,2*w+1,2*w+1).requires_grad_(False) - 1
-        # laplacian_kernel[0,0,w,w] = (2*w+1)*(2*w+1)-1
-        # boundary = F.conv2d(seg_masks.unsqueeze(1), laplacian_kernel, padding=1).squeeze(1)
-        
-        # for i in range(boundary.shape[0]):
-        #     current_tensor = boundary[i, :, :].detach().cpu().numpy()
-        #     current_tensor = ((current_tensor - current_tensor.min()) / (current_tensor.max() - current_tensor.min()) * 255).astype(np.uint8)
-        #     # current_tensor = cv2.Canny(current_tensor,50,100, 1)
-        #     tensor_color = cv2.applyColorMap(current_tensor, cv2.COLORMAP_VIRIDIS)
-        #     tensor_color_path = os.path.join('image_logs/boundary', '{}.png'.format(i))
-        #     cv2.imwrite(tensor_color_path, tensor_color)
-        
-        
         seg_masks = seg_masks > self.mask_threshold
 
         result['pred_scores'] = cate_scores

@@ -1,11 +1,11 @@
 # X-PDNet: Accurate Joint Plane Instance Segmentation and Monocular Depth Estimation with Cross-Task Attention and Boundary Correction
-This is an implementation for X-PDNet: a multi-task learning framework for joint plane instance segmentation and depth estimation, which allows the respective task decoder to adaptively distill the cross-supplementary information for
-the specific task optimization. Besides, we propose Depth Guided Boundary preserving Loss to precise boundary region
-segmentation.
-This repo is implemented by Pytorch based on [PlaneRecNet](https://github.com/EryiXie/PlaneRecNet), proposed loss and human-annotated data will be released if we get acceptance of any upcoming conference.
+This is an implementation for X-PDNet: a multi-task learning framework for joint plane instance segmentation and depth estimation, which allows the respective task decoder to adaptively distill the cross-supplementary information for the specific task optimization. Besides, we propose Depth Guided Boundary preserving Loss to precise boundary region segmentation.
+We also manually annotated over 3000 images, as a standard avaluation set for plane instance segmentation task
+
+This repo is implemented by Pytorch based on [PlaneRecNet](https://github.com/EryiXie/PlaneRecNet), the detail code, introduction of training/testing, detail of proposed loss, and human-annotated data will be updated if we get acceptance of any upcoming conference.
 ### 1. General architecture
 ![Network Architecture](/images/X-PDNet.png)
-### 2. We design a cross-task attention module, which leverage the idea of PAD-Net with improvement allowing model adaptive with different scales of plane instance mask
+### 2. We design a cross-task attention module, which leverages the idea of [PAD-Net](https://openaccess.thecvf.com/content_cvpr_2018/papers/Xu_PAD-Net_Multi-Tasks_Guided_CVPR_2018_paper.pdf) with improvement allowing model adaptive with different scales of plane instance mask
 
 ![attention](/images/attention.png)
 ### 3. We focus on problem of incorrect segmentation at boundary regions, analyze the limatation of obtaining boundary from current groundtruth to design traditional boundary preserving loss

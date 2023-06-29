@@ -15,6 +15,7 @@ class PlaneRecNetLoss(nn.Module):
         3) Depth estimation loss
         4) Depth gradient loss for enhance segmentation
         5) Planar surface normal loss for enhance depth estimation
+        5) Proposed Depth Guide Boundary Preserving Loss
     """
 
     def __init__(self):
@@ -49,7 +50,6 @@ class PlaneRecNetLoss(nn.Module):
         self.depth_constraint_inst_loss = LavaLoss()
         self.vnl = VNL_Loss((640,640))
         
-        self.boundary_loss = BoundaryLoss()
         
 
     def forward(self, net, mask_preds, cate_preds, kernel_preds, depth_preds, gt_instances, gt_depths):
@@ -140,26 +140,6 @@ class PlaneRecNetLoss(nn.Module):
         loss_ins_mean = torch.cat(loss_ins).mean()
         loss_ins = loss_ins_mean * self.ins_loss_weight
         losses['ins'] = loss_ins
-
-        # import os
-        # import cv2
-        # import numpy as np
-    
-        # current_tensor = gradient_masks[0, 0, :, :].detach().cpu().numpy()
-        # current_tensor = ((current_tensor - current_tensor.min()) / (current_tensor.max() - current_tensor.min()) * 255).astype(np.uint8)
-        # # current_tensor = cv2.Canny(current_tensor,50,100, 1)
-        # tensor_color = cv2.applyColorMap(current_tensor, cv2.COLORMAP_VIRIDIS)
-        # tensor_color_path = os.path.join('image_logs/gradient.png')
-        # cv2.imwrite(tensor_color_path, tensor_color)
-        # Boundary loss
-        loss_boundary = []
-        for input, target, gradient_mask in zip(ins_pred_list, ins_labels, ins_gradient_masks):
-            if input is None:
-                continue
-            input = torch.sigmoid(input)
-            loss_boundary.append(self.boundary_loss(input, target, gradient_mask))
-        loss_bdr_mean = torch.stack(loss_boundary).mean()
-        losses['bdr'] = loss_bdr_mean
 
         # Classification Loss
         cate_labels = [
@@ -437,50 +417,4 @@ class RMSElogLoss(nn.Module):
         elif self.reduction == "sum":
             loss = batched_loss.sum()
 
-        return loss
-
-class BoundaryLoss(nn.Module):
-    def __init__(self, max_size=(160, 160)):
-        super(BoundaryLoss, self).__init__()
-        w = 1
-        self.laplacian_kernel = torch.zeros((2*w+1, 2*w+1), dtype=torch.float32).reshape(1,1,2*w+1,2*w+1).requires_grad_(False) - 1
-        self.laplacian_kernel[0,0,w,w] = (2*w+1)*(2*w+1)-1
-        self.laplacian_kernel.cuda()
-        self.max_size= max_size
-        self.loss = nn.MSELoss().cuda()
-        
-    def forward(self, input, target, gradient_mask):
-        target = target.float()
-        
-        # if self.coarse_size:
-        #     input = F.interpolate(input.unsqueeze(1), self.coarse_size, mode='bilinear', align_corners=False).squeeze(1)
-        #     target = F.interpolate(target.unsqueeze(1), self.coarse_size, mode='bilinear', align_corners=False).squeeze(1)
-        #     target = target > 0.0
-        #     target = target.float()
-        target_boundary = F.conv2d(target.unsqueeze(1), self.laplacian_kernel, padding=1).squeeze(1)
-        input_boundary = F.conv2d(input.unsqueeze(1), self.laplacian_kernel, padding=1).squeeze(1)
-        # ------------------------------------------------------------------------------------------------------------
-        mask_weight = torch.ones_like(target_boundary)
-        index = list(torch.where(abs(target_boundary[:, 1: self.max_size[0] - 1, 1: self.max_size[1] -1]) > 0.2))
-        index[1] += 1
-        index[2] += 1
-        weight = torch.std(torch.stack([gradient_mask[index[0], index[1], index[2]], gradient_mask[index[0], index[1], index[2] - 1], gradient_mask[index[0], index[1], index[2] + 1],
-                              gradient_mask[index[0], index[1] - 1, index[2]], gradient_mask[index[0], index[1] + 1, index[2]], 
-                              gradient_mask[index[0], index[1] + 1, index[2] + 1], gradient_mask[index[0], index[1] + 1, index[2] -1],
-                              gradient_mask[index[0], index[1] - 1, index[2] + 1], gradient_mask[index[0], index[1] - 1, index[2] -1]], -1), dim=-1)
-        weight = (weight - weight.min() ) / ( weight.max() - weight.min())
-        
-        mask_weight[index[0], index[1], index[2]] = 3 * weight
-        mask_weight[index[0], index[1], index[2]] += 0.5
-        # ------------------------------------------------------------------------------------------------------------
-
-        target = torch.abs(target_boundary)
-        input = torch.abs(input_boundary)
-        input_candidate = input > 0.2
-        # adding if use DGBPL
-        input *= mask_weight
-        target *= mask_weight
-        input = input[input_candidate]
-        target = target[input_candidate]
-        loss = self.loss(input, target)
         return loss
