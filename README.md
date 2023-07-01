@@ -8,10 +8,10 @@ This repo is implemented by Pytorch based on [PlaneRecNet](https://github.com/Er
 ### 2. We design a cross-task attention module, which leverages the idea of [PAD-Net](https://openaccess.thecvf.com/content_cvpr_2018/papers/Xu_PAD-Net_Multi-Tasks_Guided_CVPR_2018_paper.pdf) with improvement allowing model adaptive with different scales of plane instance mask
 
 ![attention](/images/attention.png)
-### 3. We focus on problem of incorrect segmentation at boundary regions, analyze the limatation of obtaining boundary from current groundtruth to design traditional boundary preserving loss
+### 3. We focus on problem of incorrect segmentation at boundary regions, analyze the limitation of obtaining boundary from current groundtruth in designing the traditional boundary preserving loss
 
 ![coarse](/images/coarse.png)
-### 4. Then propose Depth Guide Boundary Preserving Loss, that alleviates the problem of imperfect instance ground truth
+### 4. Then propose Depth Guide Boundary Preserving Loss, that alleviates the problem of imperfect instance segmentation ground truth mask
 Since my paper is under review, I cannot share more about this
 ### 5. Manually annotated dataset for evaluation
 We contribute 3000 images with over 30000 instance masks labeled by human for reliable evaluation of plane instance segmentation task
